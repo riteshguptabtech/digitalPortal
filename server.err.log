@@ -1,0 +1,49 @@
+Failed to start server: MongoServerSelectionError: 44280000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+    at Topology.selectServer (C:\Users\Home\Desktop\TECHSTUFF\demo\node_modules\mongodb\lib\sdam\topology.js:348:38)
+    at async Topology._connect (C:\Users\Home\Desktop\TECHSTUFF\demo\node_modules\mongodb\lib\sdam\topology.js:220:28)
+    at async Topology.connect (C:\Users\Home\Desktop\TECHSTUFF\demo\node_modules\mongodb\lib\sdam\topology.js:171:13)
+    at async topologyConnect (C:\Users\Home\Desktop\TECHSTUFF\demo\node_modules\mongodb\lib\mongo_client.js:258:17)
+    at async MongoClient._connect (C:\Users\Home\Desktop\TECHSTUFF\demo\node_modules\mongodb\lib\mongo_client.js:271:13)
+    at async MongoClient.connect (C:\Users\Home\Desktop\TECHSTUFF\demo\node_modules\mongodb\lib\mongo_client.js:196:13)
+    at async getDb (file:///C:/Users/Home/Desktop/TECHSTUFF/demo/server/db.js:25:5)
+    at async getCollections (file:///C:/Users/Home/Desktop/TECHSTUFF/demo/server/db.js:33:14)
+    at async initializeDatabase (file:///C:/Users/Home/Desktop/TECHSTUFF/demo/server/db.js:41:28)
+    at async file:///C:/Users/Home/Desktop/TECHSTUFF/demo/server/index.js:239:3 {
+  errorLabelSet: Set(0) {},
+  reason: TopologyDescription {
+    type: 'ReplicaSetNoPrimary',
+    servers: Map(3) {
+      'ac-eosfgtj-shard-00-00.wfqx2hc.mongodb.net:27017' => [ServerDescription],
+      'ac-eosfgtj-shard-00-01.wfqx2hc.mongodb.net:27017' => [ServerDescription],
+      'ac-eosfgtj-shard-00-02.wfqx2hc.mongodb.net:27017' => [ServerDescription]
+    },
+    stale: false,
+    compatible: true,
+    heartbeatFrequencyMS: 10000,
+    localThresholdMS: 15,
+    setName: 'atlas-1bd52p-shard-0',
+    maxElectionId: null,
+    maxSetVersion: null,
+    commonWireVersion: 0,
+    logicalSessionTimeoutMinutes: null
+  },
+  code: undefined,
+  [cause]: MongoNetworkError: 44280000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+  
+      at TLSSocket.<anonymous> (C:\Users\Home\Desktop\TECHSTUFF\demo\node_modules\mongodb\lib\cmap\connect.js:314:44)
+      at Object.onceWrapper (node:events:633:26)
+      at TLSSocket.emit (node:events:518:28)
+      at emitErrorNT (node:internal/streams/destroy:170:8)
+      at emitErrorCloseNT (node:internal/streams/destroy:129:3)
+      at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+    errorLabelSet: Set(3) { 'SystemOverloadedError', 'RetryableError', 'ResetPool' },
+    beforeHandshake: false,
+    [cause]: [Error: 44280000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+    ] {
+      library: 'SSL routines',
+      reason: 'tlsv1 alert internal error',
+      code: 'ERR_SSL_TLSV1_ALERT_INTERNAL_ERROR'
+    }
+  }
+}

@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" role="img" aria-label="DAS Digital payment QR code">
+  <rect width="256" height="256" fill="#ffffff"/>
+  <rect x="16" y="16" width="64" height="64" fill="#020617"/>
+  <rect x="28" y="28" width="40" height="40" fill="#ffffff"/>
+  <rect x="38" y="38" width="20" height="20" fill="#020617"/>
+  <rect x="176" y="16" width="64" height="64" fill="#020617"/>
+  <rect x="188" y="28" width="40" height="40" fill="#ffffff"/>
+  <rect x="198" y="38" width="20" height="20" fill="#020617"/>
+  <rect x="16" y="176" width="64" height="64" fill="#020617"/>
+  <rect x="28" y="188" width="40" height="40" fill="#ffffff"/>
+  <rect x="38" y="198" width="20" height="20" fill="#020617"/>
+  <g fill="#020617">
+    <rect x="96" y="16" width="16" height="16"/>
+    <rect x="128" y="16" width="16" height="16"/>
+    <rect x="144" y="32" width="16" height="16"/>
+    <rect x="96" y="48" width="32" height="16"/>
+    <rect x="112" y="80" width="16" height="16"/>
+    <rect x="144" y="80" width="32" height="16"/>
+    <rect x="16" y="96" width="16" height="16"/>
+    <rect x="48" y="96" width="32" height="16"/>
+    <rect x="96" y="96" width="16" height="16"/>
+    <rect x="128" y="96" width="16" height="16"/>
+    <rect x="176" y="96" width="16" height="16"/>
+    <rect x="224" y="96" width="16" height="16"/>
+    <rect x="32" y="128" width="16" height="16"/>
+    <rect x="80" y="128" width="16" height="16"/>
+    <rect x="112" y="128" width="48" height="16"/>
+    <rect x="192" y="128" width="16" height="16"/>
+    <rect x="224" y="128" width="16" height="16"/>
+    <rect x="96" y="160" width="16" height="16"/>
+    <rect x="144" y="160" width="16" height="16"/>
+    <rect x="176" y="160" width="64" height="16"/>
+    <rect x="96" y="176" width="32" height="16"/>
+    <rect x="160" y="192" width="16" height="16"/>
+    <rect x="192" y="192" width="16" height="16"/>
+    <rect x="224" y="192" width="16" height="16"/>
+    <rect x="96" y="208" width="16" height="16"/>
+    <rect x="128" y="208" width="32" height="16"/>
+    <rect x="176" y="224" width="16" height="16"/>
+    <rect x="208" y="224" width="32" height="16"/>
+  </g>
+  <rect x="96" y="112" width="64" height="32" rx="4" fill="#ffffff"/>
+  <text x="128" y="132" fill="#0891b2" font-family="Arial, sans-serif" font-size="14" font-weight="700" text-anchor="middle">DAS PAY</text>
+</svg>
