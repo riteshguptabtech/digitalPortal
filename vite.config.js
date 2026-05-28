@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
     proxy: {
-      '/api': 'https://dk-server-production.up.railway.app/',
+      '/api': 'https://digitalportal-production.up.railway.app/api',
     },
   },
 })
