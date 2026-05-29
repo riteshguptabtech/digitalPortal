@@ -13,11 +13,11 @@ export async function createBill(data) {
     throw new Error('Valid request details are required')
   }
 
-  if (requestType === 'electricity' && (!data.customerId || !data.state)) {
+  if (requestType === 'electricity' && (!data.customerId || !data.state || !/^\d+$/.test(String(data.customerId)))) {
     throw new Error('Valid bill details are required')
   }
 
-  if (requestType === 'mobile_recharge' && (!data.mobileNumber || !data.operator || !data.circle)) {
+  if (requestType === 'mobile_recharge' && (!data.mobileNumber || !data.operator)) {
     throw new Error('Valid recharge details are required')
   }
 
@@ -41,11 +41,11 @@ export async function createBill(data) {
     id: `bill-${crypto.randomUUID()}`,
     request_type: requestType,
     user_id: data.userId,
-    state: requestType === 'electricity' ? data.state : data.circle,
+    state: requestType === 'electricity' ? data.state : null,
     customer_id: requestType === 'electricity' ? data.customerId : data.mobileNumber,
     mobile_number: requestType === 'mobile_recharge' ? data.mobileNumber : null,
     operator: requestType === 'mobile_recharge' ? data.operator : null,
-    circle: requestType === 'mobile_recharge' ? data.circle : null,
+    circle: null,
     plan_name: requestType === 'mobile_recharge' ? data.planName || 'Custom recharge' : null,
     original_amount: originalAmount,
     discount_percent: discountPercent,

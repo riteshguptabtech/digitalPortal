@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { CircleDollarSign, ClipboardList, IndianRupee, LayoutDashboard, Menu, QrCode, Search, Upload } from 'lucide-react';
+import { CircleDollarSign, ClipboardList, IndianRupee, LayoutDashboard, Menu, Plus, QrCode, Search, Trash2, Upload } from 'lucide-react';
 import { useApp } from '../context/AppContext.jsx';
 import BillsTable from '../components/bills/BillsTable.jsx';
 import AdminSideMenu from '../components/layout/AdminSideMenu.jsx';
@@ -10,6 +10,8 @@ import Input from '../components/ui/Input.jsx';
 import SummaryCard from '../components/ui/SummaryCard.jsx';
 import DepositRequestsTable from '../components/wallet/DepositRequestsTable.jsx';
 import { formatMoney } from '../utils/format.js';
+
+const operators = ['Jio', 'Airtel', 'Vi', 'BSNL'];
 
 const sectionMeta = {
   overview: {
@@ -28,21 +30,27 @@ const sectionMeta = {
     title: 'Discounts',
     subtitle: 'Change discounts applied to new bill and recharge requests.',
   },
+  rechargePlans: {
+    title: 'Recharge Plans',
+    subtitle: 'Add or remove mobile recharge plans shown to users.',
+  },
 };
 
 export default function AdminDashboard() {
-  const { addToast, currentUser, discountPercent, rechargeDiscountPercent, paymentQr, getAllBills, getAllDeposits, updateDiscountPercent, updatePaymentQr, wallet } = useApp();
+  const { addToast, currentUser, discountPercent, rechargeDiscountPercent, rechargePlans, paymentQr, getAllBills, getAllDeposits, updateDiscountPercent, updatePaymentQr, updateRechargePlans, wallet } = useApp();
   const [activeSection, setActiveSection] = useState('overview');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [discountDraft, setDiscountDraft] = useState(String(discountPercent));
   const [rechargeDiscountDraft, setRechargeDiscountDraft] = useState(String(rechargeDiscountPercent));
+  const [planDraft, setPlanDraft] = useState({ operator: operators[0], name: '', amount: '' });
   const [isSavingDiscount, setIsSavingDiscount] = useState(false);
   const [isSavingQr, setIsSavingQr] = useState(false);
+  const [isSavingPlans, setIsSavingPlans] = useState(false);
   const allBills = getAllBills();
   const allDeposits = getAllDeposits();
   const filteredBills = useMemo(
-    () => allBills.filter((bill) => `${bill.userName || ''} ${bill.customerId || ''} ${bill.state || ''} ${bill.status || ''}`.toLowerCase().includes(query.toLowerCase())),
+    () => allBills.filter((bill) => `${bill.customerId || ''} ${bill.state || ''} ${bill.operator || ''} ${bill.status || ''}`.toLowerCase().includes(query.toLowerCase())),
     [allBills, query],
   );
   const pending = allBills.filter((bill) => bill.status === 'pending').length;
@@ -97,6 +105,42 @@ export default function AdminDashboard() {
       addToast(error.message, 'error');
     } finally {
       setIsSavingQr(false);
+    }
+  };
+
+  const addRechargePlan = async (event) => {
+    event.preventDefault();
+    setIsSavingPlans(true);
+    try {
+      await updateRechargePlans([
+        ...rechargePlans,
+        {
+          operator: planDraft.operator,
+          name: planDraft.name,
+          amount: Number(planDraft.amount),
+        },
+      ]);
+      setPlanDraft({ operator: planDraft.operator, name: '', amount: '' });
+    } catch (error) {
+      addToast(error.message, 'error');
+    } finally {
+      setIsSavingPlans(false);
+    }
+  };
+
+  const removeRechargePlan = async (operator, planName) => {
+    if (rechargePlans.length <= 1) {
+      addToast('Keep at least one recharge plan', 'error');
+      return;
+    }
+
+    setIsSavingPlans(true);
+    try {
+      await updateRechargePlans(rechargePlans.filter((plan) => plan.operator !== operator || plan.name !== planName));
+    } catch (error) {
+      addToast(error.message, 'error');
+    } finally {
+      setIsSavingPlans(false);
     }
   };
 
@@ -170,6 +214,74 @@ export default function AdminDashboard() {
             </Button>
           </div>
         </form>
+      )}
+
+      {activeSection === 'rechargePlans' && (
+        <section className="grid gap-5 lg:grid-cols-[1fr_22rem]">
+          <div className="overflow-hidden rounded-md border border-slate-200 bg-white shadow-sm">
+            <div className="border-b border-slate-200 px-4 py-3 sm:px-5">
+              <h2 className="text-lg font-bold text-slate-950">Mobile recharge plans</h2>
+              <p className="text-sm text-slate-500">These plans appear in the user recharge form.</p>
+            </div>
+            <div className="divide-y divide-slate-100">
+              {rechargePlans.map((plan) => (
+                <div key={`${plan.operator}-${plan.name}`} className="flex items-center justify-between gap-3 px-4 py-3 sm:px-5">
+                  <div className="min-w-0">
+                    <p className="truncate font-semibold text-slate-900">{plan.name}</p>
+                    <p className="text-sm text-slate-500">{plan.operator} SIM - {formatMoney(plan.amount)}</p>
+                  </div>
+                  <Button
+                    type="button"
+                    variant="danger"
+                    className="h-9 px-3"
+                    disabled={isSavingPlans || rechargePlans.length <= 1}
+                    onClick={() => removeRechargePlan(plan.operator, plan.name)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                    Remove
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <form onSubmit={addRechargePlan} className="rounded-md border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+            <h2 className="text-lg font-bold text-slate-950">Add plan</h2>
+            <div className="mt-4 space-y-3">
+              <Field label="SIM">
+                <select
+                  className="h-11 w-full rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none transition focus:border-slate-400 focus:ring-4 focus:ring-slate-100"
+                  value={planDraft.operator}
+                  onChange={(event) => setPlanDraft({ ...planDraft, operator: event.target.value })}
+                >
+                  {operators.map((operator) => (
+                    <option key={operator} value={operator}>{operator}</option>
+                  ))}
+                </select>
+              </Field>
+              <Field label="Plan name">
+                <Input
+                  required
+                  value={planDraft.name}
+                  onChange={(event) => setPlanDraft({ ...planDraft, name: event.target.value })}
+                />
+              </Field>
+              <Field label="Amount">
+                <Input
+                  required
+                  type="number"
+                  min="1"
+                  value={planDraft.amount}
+                  onChange={(event) => setPlanDraft({ ...planDraft, amount: event.target.value })}
+                />
+              </Field>
+              <Button type="submit" className="w-full" disabled={isSavingPlans}>
+                <Plus className="h-4 w-4" />
+                {isSavingPlans ? 'Saving...' : 'Add plan'}
+              </Button>
+            </div>
+          </form>
+        </section>
       )}
 
       {activeSection === 'deposits' && (

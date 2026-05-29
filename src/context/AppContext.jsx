@@ -10,6 +10,7 @@ export function AppProvider({ children }) {
   const [deposits, setDeposits] = useState([]);
   const [discountPercent, setDiscountPercent] = useState(0);
   const [rechargeDiscountPercent, setRechargeDiscountPercent] = useState(0);
+  const [rechargePlans, setRechargePlans] = useState([]);
   const [paymentQr, setPaymentQr] = useState(null);
   const [wallet, setWallet] = useState({});
   const [toasts, setToasts] = useState([]);
@@ -34,6 +35,7 @@ export function AppProvider({ children }) {
         setDeposits(data.deposits || []);
         setDiscountPercent(data.discountPercent || 0);
         setRechargeDiscountPercent(data.rechargeDiscountPercent || 0);
+        setRechargePlans(data.rechargePlans || []);
         setPaymentQr(data.paymentQr || null);
         setWallet(data.wallet || {});
       } catch (err) {
@@ -211,6 +213,16 @@ export function AppProvider({ children }) {
     addToast("Payment QR updated successfully", "success");
   };
 
+  const updateRechargePlans = async (plans) => {
+    const data = await api("/settings/recharge-plans", {
+      method: "PATCH",
+      body: JSON.stringify({ plans }),
+    });
+
+    setRechargePlans(data.rechargePlans || []);
+    addToast("Recharge plans updated successfully", "success");
+  };
+
   // ---------------- SELECTORS ----------------
   const getUserWallet = (userId) => wallet[userId] ?? 0;
   const getUserBills = (userId) =>
@@ -242,9 +254,11 @@ export function AppProvider({ children }) {
         deposits,
         discountPercent,
         rechargeDiscountPercent,
+        rechargePlans,
         paymentQr,
         updateDiscountPercent,
         updatePaymentQr,
+        updateRechargePlans,
 
         getUserWallet,
         getUserBills,

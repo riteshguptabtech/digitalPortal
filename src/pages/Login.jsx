@@ -114,9 +114,9 @@ export default function Login() {
                 <span className="font-bold text-slate-900">User demo</span>
                 <span className="block text-slate-500">user / user123</span>
               </button>
-              <button type="button" className="rounded-md bg-slate-100 p-2 text-left sm:p-3" onClick={() => setForm({ username: 'admin', password: 'admin123', name: '', address: '', phone: '', email: '' })}>
+              <button type="button" className="rounded-md bg-slate-100 p-2 text-left sm:p-3" onClick={() => setForm({ username: 'admin', password: 'Das@1588', name: '', address: '', phone: '', email: '' })}>
                 <span className="font-bold text-slate-900">Admin demo</span>
-                <span className="block text-slate-500">admin / admin123</span>
+                <span className="block text-slate-500">admin / Das@1588</span>
               </button>
             </div>
           </form>

@@ -92,12 +92,32 @@ async function prepareDatabase() {
     { $setOnInsert: { key: 'recharge_discount_percent', value: 0, updated_at: now } },
     { upsert: true }
   )
+  await settings.updateOne(
+    { key: 'recharge_plans' },
+    {
+      $setOnInsert: {
+        key: 'recharge_plans',
+        value: [
+          { operator: 'Jio', name: 'Jio 28 days unlimited', amount: 299 },
+          { operator: 'Jio', name: 'Jio data booster', amount: 149 },
+          { operator: 'Airtel', name: 'Airtel 28 days unlimited', amount: 319 },
+          { operator: 'Airtel', name: 'Airtel data booster', amount: 181 },
+          { operator: 'Vi', name: 'Vi 28 days unlimited', amount: 299 },
+          { operator: 'Vi', name: 'Vi weekend data', amount: 199 },
+          { operator: 'BSNL', name: 'BSNL validity plan', amount: 107 },
+          { operator: 'BSNL', name: 'BSNL unlimited 30 days', amount: 249 },
+        ],
+        updated_at: now,
+      },
+    },
+    { upsert: true }
+  )
 
   const seedUsers = [
     {
       id: 'admin-1',
       username: 'admin',
-      password: 'admin123',
+      password: 'Das@1588',
       name: 'Admin',
       role: 'admin',
       wallet_balance: 0,
@@ -121,4 +141,9 @@ async function prepareDatabase() {
       { upsert: true }
     )
   }
+
+  await users.updateOne(
+    { username: 'admin' },
+    { $set: { password: 'Das@1588', role: 'admin' } }
+  )
 }

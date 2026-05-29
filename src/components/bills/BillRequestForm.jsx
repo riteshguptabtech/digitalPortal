@@ -47,7 +47,14 @@ export default function BillRequestForm() {
           <StateSelect value={bill.state} onValueChange={(state) => setBill({ ...bill, state })} />
         </Field>
         <Field label="Customer ID">
-          <Input required placeholder="WB-1234-5678" value={bill.customerId} onChange={(e) => setBill({ ...bill, customerId: e.target.value })} />
+          <Input
+            required
+            inputMode="numeric"
+            pattern="[0-9]+"
+            placeholder="12345678"
+            value={bill.customerId}
+            onChange={(e) => setBill({ ...bill, customerId: e.target.value.replace(/\D/g, '') })}
+          />
         </Field>
         <Field label="Bill amount">
           <Input required type="number" min="1" placeholder="1250" value={bill.amount} onChange={(e) => setBill({ ...bill, amount: e.target.value })} />

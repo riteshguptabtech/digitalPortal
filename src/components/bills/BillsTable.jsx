@@ -42,18 +42,14 @@ export default function BillsTable({ bills, admin = false }) {
                     <p className="text-xs text-slate-500">{bill.requestType === 'mobile_recharge' ? 'Mobile recharge' : 'Electricity bill'}</p>
                   </td>
                   <td className="px-4 py-4">
-                    <p className="font-semibold text-slate-900">{admin ? bill.userName : bill.customerId}</p>
-                    {admin && (
-                      <p className="text-xs text-slate-500">
-                        {bill.requestType === 'mobile_recharge' ? 'Mobile' : 'Customer ID'}: {bill.customerId}
-                      </p>
-                    )}
+                    <p className="font-semibold text-slate-900">{bill.customerId}</p>
+                    <p className="text-xs text-slate-500">{bill.requestType === 'mobile_recharge' ? 'Mobile' : 'Customer ID'}</p>
                     <p className="text-xs text-slate-500">{bill.date || formatBillDate(bill.createdAt)}</p>
                     {bill.status === 'rejected' && bill.rejectionReason && (
                       <p className="mt-1 text-xs text-rose-600">Reason: {bill.rejectionReason}</p>
                     )}
                   </td>
-                  <td className="px-4 py-4 text-slate-600">{bill.state}</td>
+                  <td className="px-4 py-4 text-slate-600">{bill.requestType === 'mobile_recharge' ? bill.operator : bill.state}</td>
                   <td className="px-4 py-4">
                     <p className="font-bold text-slate-950">{formatMoney(bill.amount)}</p>
                     {bill.discountAmount > 0 && (

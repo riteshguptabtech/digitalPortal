@@ -3,8 +3,20 @@ import { getCollections } from '../config/db.js'
 const ELECTRICITY_DISCOUNT_KEY = 'bill_discount_percent'
 const RECHARGE_DISCOUNT_KEY = 'recharge_discount_percent'
 const PAYMENT_QR_KEY = 'payment_qr'
+const RECHARGE_PLANS_KEY = 'recharge_plans'
 const ALLOWED_QR_TYPES = new Set(['image/png', 'image/jpeg', 'image/webp', 'image/svg+xml'])
 const MAX_QR_BYTES = 1024 * 1024
+const RECHARGE_OPERATORS = new Set(['Jio', 'Airtel', 'Vi', 'BSNL'])
+const DEFAULT_RECHARGE_PLANS = [
+  { operator: 'Jio', name: 'Jio 28 days unlimited', amount: 299 },
+  { operator: 'Jio', name: 'Jio data booster', amount: 149 },
+  { operator: 'Airtel', name: 'Airtel 28 days unlimited', amount: 319 },
+  { operator: 'Airtel', name: 'Airtel data booster', amount: 181 },
+  { operator: 'Vi', name: 'Vi 28 days unlimited', amount: 299 },
+  { operator: 'Vi', name: 'Vi weekend data', amount: 199 },
+  { operator: 'BSNL', name: 'BSNL validity plan', amount: 107 },
+  { operator: 'BSNL', name: 'BSNL unlimited 30 days', amount: 249 },
+]
 
 function normalizeDiscount(value) {
   const discountPercent = Number(value)
@@ -60,6 +72,66 @@ export async function getDiscountSettings() {
     billDiscountPercent: discountPercent,
     rechargeDiscountPercent,
   }
+}
+
+function normalizeRechargePlans(plans) {
+  if (!Array.isArray(plans)) {
+    throw new Error('Recharge plans must be a list')
+  }
+
+  const seen = new Set()
+  const normalized = plans.map((plan) => {
+    const operator = String(plan?.operator || 'Jio').trim()
+    const name = String(plan?.name || '').trim()
+    const amount = Number(plan?.amount)
+
+    if (!RECHARGE_OPERATORS.has(operator) || !name || !Number.isFinite(amount) || amount <= 0) {
+      throw new Error('Each recharge plan needs a SIM, name, and valid amount')
+    }
+
+    const key = `${operator}:${name}`.toLowerCase()
+    if (seen.has(key)) {
+      throw new Error('Recharge plan names must be unique for each SIM')
+    }
+    seen.add(key)
+
+    return {
+      operator,
+      name,
+      amount,
+    }
+  })
+
+  if (!normalized.length) {
+    throw new Error('Add at least one recharge plan')
+  }
+
+  return normalized
+}
+
+export async function getRechargePlans() {
+  const { settings } = await getCollections()
+  const setting = await settings.findOne({ key: RECHARGE_PLANS_KEY })
+  const plans = Array.isArray(setting?.value) && setting.value.length ? setting.value : DEFAULT_RECHARGE_PLANS
+  return normalizeRechargePlans(plans)
+}
+
+export async function updateRechargePlans(plans) {
+  const rechargePlans = normalizeRechargePlans(plans)
+  const { settings } = await getCollections()
+  const result = await settings.findOneAndUpdate(
+    { key: RECHARGE_PLANS_KEY },
+    {
+      $set: {
+        key: RECHARGE_PLANS_KEY,
+        value: rechargePlans,
+        updated_at: new Date(),
+      },
+    },
+    { upsert: true, returnDocument: 'after' }
+  )
+
+  return result.value
 }
 
 export async function updateBillDiscountPercent(value) {

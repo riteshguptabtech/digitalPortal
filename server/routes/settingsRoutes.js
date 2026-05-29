@@ -33,4 +33,13 @@ router.patch('/payment-qr', async (req, res, next) => {
   }
 })
 
+router.patch('/recharge-plans', async (req, res, next) => {
+  try {
+    const rechargePlans = await settingsService.updateRechargePlans(req.body.plans)
+    res.json({ rechargePlans })
+  } catch (err) {
+    next(err)
+  }
+})
+
 export default router

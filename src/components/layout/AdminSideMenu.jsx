@@ -1,4 +1,4 @@
-import { BadgePercent, ClipboardList, LayoutDashboard, WalletCards, X } from 'lucide-react';
+import { BadgePercent, ClipboardList, LayoutDashboard, Smartphone, WalletCards, X } from 'lucide-react';
 
 export default function AdminSideMenu({ open, onClose, onSelectSection, activeSection, user, pendingBills, pendingDeposits }) {
   const menuItems = [
@@ -6,6 +6,7 @@ export default function AdminSideMenu({ open, onClose, onSelectSection, activeSe
     ['deposits', `Deposit Approvals (${pendingDeposits})`, WalletCards],
     ['bills', `Bill Approvals (${pendingBills})`, ClipboardList],
     ['discount', 'Discounts', BadgePercent],
+    ['rechargePlans', 'Recharge Plans', Smartphone],
   ];
 
   return (
